@@ -1,6 +1,10 @@
 package models
 
-import "github.com/favert/go_app/db"
+import (
+	"fmt"
+
+	"github.com/favert/go_app/db"
+)
 
 type Produto struct {
 	Id         int
@@ -12,13 +16,17 @@ type Produto struct {
 
 func BuscaTodosOsProdutos() []Produto {
 	db := db.ConectaComBancoDeDados()
+	if db == nil {
+		fmt.Println("Falha na conexão com DB")
+		return []Produto{}
+	}
 	selectDeTodosOsProdutos, err := db.Query("select * from produtos")
 	if err != nil {
 		panic(err.Error())
 	}
 
-	p := Produto{}
 	produtos := []Produto{}
+	p := Produto{}
 
 	for selectDeTodosOsProdutos.Next() {
 		var id, quantidade int
